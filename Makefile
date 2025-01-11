@@ -6,7 +6,7 @@
 #    By: stempels <stempels@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/14 10:47:36 by stempels          #+#    #+#              #
-#    Updated: 2025/01/08 15:10:18 by stempels         ###   ########.fr        #
+#    Updated: 2025/01/11 17:23:43 by stempels         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ MAIN_O = misc/main_printf.o
 
 #-----------------------------------SRC----------------------------------------#
 SRC_DIR = src
-SRC = $(addprefix src/ft_, $(addsuffix .c, printf printf_utils get_len get_fill)) 
+SRC = $(addprefix src/ft_, $(addsuffix .c, printf printf_utils get_len get_fill new_libft)) 
 SRC_BONUS = $(addsuffix _bonus.c, ft_printf ft_printf_utils get_len get_fill)
 
 #-----------------------------------OBJ----------------------------------------#
@@ -75,6 +75,7 @@ bonus: $(OBJ_BONUS) $(LIBRARY)
 clean:
 	rm -rf $(OBJ_DIR)
 	rm -rf $(OBJ_DIR_BONUS)
+	rm -rf 
 
 libclean:
 	$(MAKE) clean -C $(LIBFT_DIR)	
@@ -83,7 +84,7 @@ libclean:
 fclean: clean
 	rm -rf $(NAME)
 	rm -rf $(BONUS)
-	rm -rf bonus
+	rm -rf $(MAIN_O)
 
 ffclean: fclean libclean
 

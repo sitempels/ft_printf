@@ -6,7 +6,7 @@
 /*   By: stempels <stempels@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 13:12:39 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/09 12:16:44 by stempels         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:11:54 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	ft_printf(const char *str, ...)
 {
 	va_list		arg;
-	t_format	format;
 	int		printed;
 
 	va_start(arg, str);
@@ -25,50 +24,49 @@ int	ft_printf(const char *str, ...)
 		return (-1);
 	}
 	printed = 0;
-	format.res = NULL;
-	format.type = fill_struct(NULL, 0, NULL, NULL);
-	str_prs(&arg, (char *)str, &format, &printed);
+	str_prs(arg, (char *)str, &printed);
 	va_end (arg);
 	return (printed);
 }
 
-int	str_prs(va_list *arg, char *str, t_format *format, int *printed)
+int	str_prs(va_list arg, char *str, int *printed)
 {
-	ssize_t		i;
+	char		*res;
+	size_t		i;
 	size_t		buffer;
 
-	i = -1;
-	while (str[++i])
+	i = 0;
+	while (str[i])
 	{
 		buffer = 1;
-		format->res = (char *)&str[i];
-		if (str[i] == '%' && is_format(str, format, &i))
+		res = &str[i];
+		if (str[i] == '%' && is_format(str, &i))
 		{
-			buffer = get_print(va_arg(*arg, void *), format);
-			if (!format->res)
-				return (-1);
+			buffer = get_print(arg, str[i]);
+			/*if (!format->res)
+				return (-1);*/
 		}
-		write (1, format->res, buffer);
-		ft_free(format);
+		else
+			write (1, res, buffer);
 		*printed = *printed + buffer;
+		i++;
 	}
 	return (0);
 }
 
-int	is_format(const char *str, t_format *format, ssize_t *place)
+int	is_format(char *str, size_t *place)
 {
 	size_t		i;
 	size_t		j;
 	char		typeset[8];
 
 	i = *place + 1;
-	fill_array(typeset, "csdiuxXp", 8);
+	fill_array(typeset, FORMAT, ft_strlen(FORMAT));
 	j = 0;
 	while (typeset[j])
 	{
 		if (typeset[j] == str[i])
 		{
-			ft_init_type(str[i], format);
 			*place = i;
 			return (1);
 		}
@@ -78,28 +76,32 @@ int	is_format(const char *str, t_format *format, ssize_t *place)
 	return (0);
 }
 
-t_format	ft_init_type(char type, t_format *format)
-{
-	t_tprint	type_print;
 
+size_t	get_print(va_list arg, char type)
+{
+	size_t	buffer;
+
+	buffer = 0;
 	if (type == 'c')
-		type_print = fill_struct(NULL, type, ft_charlen, fill_char);
+		buffer = ft_putchar_fd(va_arg(arg, int), 1);
 	else if (type == 's')
-		type_print = fill_struct(NULL, type, ft_strlen, fill_str);
+		buffer = ft_putstr_fd(va_arg(arg, char *), 1);
 	else if (type == 'd' || type == 'i')
-		type_print = fill_struct(BASE_10, type, ft_sintlen, fill_sint);
+		bu = ft_putnbr_base_fd((long long)va_arg(arg, int), BASE_10, 1);
 	else if (type == 'u')
-		type_print = fill_struct(BASE_10, type, ft_uintlen, fill_uint);
-	else if (type == 'x' || type == 'X' || type == 'p')
-		type_print = fill_struct(BASE_16, type, ft_uintlen, fill_uint);
+		buffer = ft_putnbr_base_fd(va_arg(arg, long long), BASE_10, 1);
+	else if (type == 'x')
+		buffer = ft_putnbr_base_fd(va_arg(arg, long long), BASE_16, 1);
+	else if (type == 'X')
+		buffer = ft_putnbr_base_fd(va_arg(arg, long long), BASE_X16, 1);
+	else if (type == 'p')
+		buffer += ft_putnbr_base_fd((long long)va_arg(arg, uintptr_t), BASE_16, 1);
 	else
-		type_print = fill_struct(NULL, 0, NULL, NULL);
-	format->res = &type;
-	format->type = type_print;
-	return (*format);
+		return (-1);
+	return (buffer);
 }
 
-size_t	get_print(void *argument, t_format *format)
+/*size_t	get_print(void *argument, t_format *format)
 {
 	size_t			len;
 
@@ -116,4 +118,4 @@ size_t	get_print(void *argument, t_format *format)
 	format->res[len] = '\0';
 	format->type.get_fill(&argument, format, len);
 	return (len);
-}
+}*/

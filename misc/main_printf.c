@@ -6,7 +6,7 @@
 /*   By: stempels <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 13:24:45 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/08 15:00:59 by stempels         ###   ########.fr       */
+/*   Updated: 2025/01/11 17:45:13 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,26 @@ int	main(void)
 	printf("\n----- wrong argument test -----\n");
 	
 	printf("\n----- argument test -----\n\n");
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %c\n", 'a'));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %s\n", "bcd"));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %d\n", -2147483648));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %i\n", 2147483647));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %u\n", 0));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %u\n", 4294967295));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %x\n", 16));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %X\n", 'j'));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %p\n", p));
-	printf("valeur ft_printf: %d\n", ft_printf("Ceci %p\n", e));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci c %c\n", 'a'));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci s %s\n", "bcd"));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci d %d\n", -2147483648));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci d %d\n", -1));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci d %d\n", 0));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci d %d\n", 1));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci i %i\n", 2147483647));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci u %u\n", 0));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci u %u\n", 4294967295));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci x %x\n", 16));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci X %X\n", 'j'));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci p %p\n", p));
+	printf("valeur ft_printf: %d\n", ft_printf("Ceci p %p\n", e));
 	printf("valeur ft_printf: %d\n", ft_printf("Ceci %c %s %d %i %u %u %x %X %p %p\n", 'a', "bcd", -2147483648, 2147483647, 0, 4294967295, 16, 'j', p, e));
 	printf("valeur    printf: %d\n", printf("Ceci %c\n", 'a'));
 	printf("valeur    printf: %d\n", printf("Ceci %s\n", "bcd"));
 	printf("valeur    printf: %d\n", printf("Ceci %d\n", (int)-2147483648));
+	printf("valeur    printf: %d\n", printf("Ceci %d\n", (int)-1));
+	printf("valeur    printf: %d\n", printf("Ceci %d\n", (int)0));
+	printf("valeur    printf: %d\n", printf("Ceci %d\n", (int)1));
 	printf("valeur    printf: %d\n", printf("Ceci %i\n", (int)2147483647));
 	printf("valeur    printf: %d\n", printf("Ceci %u\n", 0));
 	printf("valeur    printf: %d\n", printf("Ceci %u\n", (unsigned)4294967295));
