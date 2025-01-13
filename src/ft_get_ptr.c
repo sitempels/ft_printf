@@ -1,51 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_new_libft.c                                     :+:      :+:    :+:   */
+/*   ft_get_ptr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: stempels <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/11 14:37:46 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/11 18:07:25 by stempels         ###   ########.fr       */
+/*   Created: 2025/01/13 15:40:28 by stempels          #+#    #+#             */
+/*   Updated: 2025/01/13 16:01:49 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static size_t	writing_nbr_fd(long long nbr, char *base, ssize_t b_len, int fd);
+static int	ft_putptr_bfd(unsigned long long nbr, char *base, int fd);
+static int	wptr(unsigned long long nbr, char *base, size_t b_len, int fd);
 
-size_t	ft_putnbr_base_fd(long long nbr, char *base, int fd)
+int	get_p(unsigned long long arg, char *base, int fd)
 {
 	size_t	writed;
+
+	writed = 0;
+	if (arg == 0)
+		return (write(fd, "(nil)", 5));
+	writed += write(fd, "0x", 2);
+	return (writed += ft_putptr_bfd(arg, base, fd));
+}
+
+static int	ft_putptr_bfd(unsigned long long nbr, char *base, int fd)
+{
+	int		writed;
 	size_t	base_len;
 
-//	secure_printf(nbr);
 	if (fd < 0)
 		return (-1);
 	writed = 0;
+	base_len = 0;
 	base_len = ft_strlen(base);
-	if (nbr < 0)
-	{
-		ft_putchar_fd('-', fd);
-		nbr *= -1;
-		writed++;
-	}
-	writed += writing_nbr_fd(nbr, base, base_len, fd);
+	writed += wptr(nbr, base, base_len, fd);
 	return (writed);
 }
 
-static size_t	writing_nbr_fd(long long nbr, char *base, ssize_t b_len, int fd)
+static int	wptr(unsigned long long nbr, char *base, size_t b_len, int fd)
 {
-	ssize_t	writed;
-	ssize_t printed;
+	int	writed;
+	int	printed;
 
 	writed = 0;
 	printed = 0;
 	if (nbr > b_len - 1)
-		printed += writing_nbr_fd(nbr / b_len, base, b_len, fd);
+		printed += wptr(nbr / b_len, base, b_len, fd);
 	if (printed == -1)
 		return (-1);
-	writed = ft_putchar_fd(base[nbr % b_len], 1);
+	writed = ft_putchar_fd(base[nbr % b_len], fd);
 	if (writed == -1)
 		return (-1);
 	printed = printed + writed;

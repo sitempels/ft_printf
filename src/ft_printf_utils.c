@@ -3,34 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: stempels <stempels@student.s19.be>         +#+  +:+       +#+        */
+/*   By: stempels <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/10 10:23:47 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/02 12:17:11 by stempels         ###   ########.fr       */
+/*   Created: 2025/01/11 14:37:46 by stempels          #+#    #+#             */
+/*   Updated: 2025/01/13 16:00:45 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	ft_free(t_format *format)
+static int	writing_nbr_fd(long long nbr, char *base, ssize_t b_len, int fd);
+
+int	ft_putnbr_bfd(long long nbr, char *base, int fd)
 {
-	if (format->type.type != 0)
+	int		writed;
+	size_t	base_len;
+
+	if (fd < 0)
+		return (-1);
+	writed = 0;
+	base_len = 0;
+	base_len = ft_strlen(base);
+	if (nbr < 0)
 	{
-		free(format->res);
+		ft_putchar_fd('-', fd);
+		nbr *= -1;
+		writed++;
 	}
-	format->type.type = 0;
-	return ;
+	writed += writing_nbr_fd(nbr, base, base_len, fd);
+	return (writed);
 }
 
-t_tprint	fill_struct(char *base, char type, size_t (*len)(), void (*fill)())
+static int	writing_nbr_fd(long long nbr, char *base, ssize_t b_len, int fd)
 {
-	t_tprint	struct_to_fill;
+	int	writed;
+	int	printed;
 
-	struct_to_fill.base = base;
-	struct_to_fill.type = type;
-	struct_to_fill.get_len = len;
-	struct_to_fill.get_fill = fill;
-	return (struct_to_fill);
+	writed = 0;
+	printed = 0;
+	if (nbr > b_len - 1)
+		printed += writing_nbr_fd(nbr / b_len, base, b_len, fd);
+	if (printed == -1)
+		return (-1);
+	writed = ft_putchar_fd(base[nbr % b_len], fd);
+	if (writed == -1)
+		return (-1);
+	printed = printed + writed;
+	return (printed);
 }
 
 char	*fill_array(char *dst, char *str, size_t n)
@@ -45,4 +64,11 @@ char	*fill_array(char *dst, char *str, size_t n)
 	}
 	dst[i] = '\0';
 	return (dst);
+}
+
+int	get_s(char *arg, int fd)
+{
+	if (arg == NULL)
+		return (write(fd, "(null)", 6));
+	return (ft_putstr_fd(arg, fd));
 }

@@ -6,34 +6,37 @@
 /*   By: stempels <stempels@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 13:12:39 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/11 18:11:54 by stempels         ###   ########.fr       */
+/*   Updated: 2025/01/13 16:09:00 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
+static int	str_prs(va_list arg, char *str, int *printed, int fd);
+static int	is_format(char *str, size_t *place);
+static int	get_print(va_list arg, char type, int fd);
+
 int	ft_printf(const char *str, ...)
 {
-	va_list		arg;
+	int		fd;
 	int		printed;
+	va_list	arg;
 
+	fd = 1;
 	va_start(arg, str);
-	if (str == NULL)
-	{
-		va_end (arg);
-		return (-1);
-	}
 	printed = 0;
-	str_prs(arg, (char *)str, &printed);
+	if (!str)
+		return (-1);
+	str_prs(arg, (char *)str, &printed, fd);
 	va_end (arg);
 	return (printed);
 }
 
-int	str_prs(va_list arg, char *str, int *printed)
+static int	str_prs(va_list arg, char *str, int *printed, int fd)
 {
-	char		*res;
-	size_t		i;
-	size_t		buffer;
+	int		buffer;
+	char	*res;
+	size_t	i;
 
 	i = 0;
 	while (str[i])
@@ -42,23 +45,23 @@ int	str_prs(va_list arg, char *str, int *printed)
 		res = &str[i];
 		if (str[i] == '%' && is_format(str, &i))
 		{
-			buffer = get_print(arg, str[i]);
-			/*if (!format->res)
-				return (-1);*/
+			buffer = get_print(arg, str[i], fd);
+			if (buffer < 0)
+				return (-1);
 		}
 		else
 			write (1, res, buffer);
 		*printed = *printed + buffer;
 		i++;
 	}
-	return (0);
+	return (buffer);
 }
 
-int	is_format(char *str, size_t *place)
+static int	is_format(char *str, size_t *place)
 {
+	char		typeset[9];
 	size_t		i;
 	size_t		j;
-	char		typeset[8];
 
 	i = *place + 1;
 	fill_array(typeset, FORMAT, ft_strlen(FORMAT));
@@ -76,46 +79,26 @@ int	is_format(char *str, size_t *place)
 	return (0);
 }
 
-
-size_t	get_print(va_list arg, char type)
+static int	get_print(va_list arg, char type, int fd)
 {
-	size_t	buffer;
+	int	b;
 
-	buffer = 0;
+	b = 0;
 	if (type == 'c')
-		buffer = ft_putchar_fd(va_arg(arg, int), 1);
+		b = ft_putchar_fd(va_arg(arg, int), fd);
 	else if (type == 's')
-		buffer = ft_putstr_fd(va_arg(arg, char *), 1);
+		b = get_s(va_arg(arg, char *), fd);
 	else if (type == 'd' || type == 'i')
-		bu = ft_putnbr_base_fd((long long)va_arg(arg, int), BASE_10, 1);
+		b = ft_putnbr_bfd((long long)va_arg(arg, int), BA_10, fd);
 	else if (type == 'u')
-		buffer = ft_putnbr_base_fd(va_arg(arg, long long), BASE_10, 1);
+		b = ft_putnbr_bfd((long long)va_arg(arg, unsigned), BA_10, fd);
 	else if (type == 'x')
-		buffer = ft_putnbr_base_fd(va_arg(arg, long long), BASE_16, 1);
+		b = ft_putnbr_bfd((long long)va_arg(arg, unsigned), BA_16, fd);
 	else if (type == 'X')
-		buffer = ft_putnbr_base_fd(va_arg(arg, long long), BASE_X16, 1);
+		b = ft_putnbr_bfd((long long)va_arg(arg, unsigned), BA_X16, fd);
 	else if (type == 'p')
-		buffer += ft_putnbr_base_fd((long long)va_arg(arg, uintptr_t), BASE_16, 1);
+		b = get_p(va_arg(arg, unsigned long long), BA_16, fd);
 	else
-		return (-1);
-	return (buffer);
+		b = write(fd, "%", 1);
+	return (b);
 }
-
-/*size_t	get_print(void *argument, t_format *format)
-{
-	size_t			len;
-
-	if (!argument && format->type.type == 'p')
-	{
-		format->res = "(nil)";
-		format->type.type = 0;
-		return (5);
-	}
-	len = format->type.get_len(argument, format);
-	format->res = (char *) malloc (sizeof(char) * len + 1);
-	if (!format->res)
-		return (-1);
-	format->res[len] = '\0';
-	format->type.get_fill(&argument, format, len);
-	return (len);
-}*/

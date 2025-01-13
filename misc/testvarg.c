@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-char	cast_func(void *a)
+/*char	cast_func(void *a)
 {
 	char	b;
 
@@ -38,10 +38,25 @@ int	testarg(const char *format, ...)
 	printf("%c \n", ar3);
 	va_end(arg);
 	return (0);
+}*/
+int	testarg(int test)
+{
+	printf("%d\n", test);
+	return (1);
+}
+
+int	testvarg(const char *str, ...)
+{
+	va_list	arg;
+
+	va_start(arg, str);
+	testarg(va_arg(arg, int));
+	va_end (arg);
+	return (1);
 }
 
 int	main(void)
 {
-	testarg("a tester", "ababa", -951, 'a');
+	testvarg("test", 999LL);
 	return (0);
 }
