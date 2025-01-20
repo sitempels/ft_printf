@@ -6,7 +6,7 @@
 /*   By: stempels <stempels@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 07:34:36 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/13 16:04:58 by stempels         ###   ########.fr       */
+/*   Updated: 2025/01/20 11:00:43 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <stdarg.h>
 # include <stdlib.h>
 # include <stdint.h>
-# include "libft.h"
+# include <limits.h>
 //
 /*----------------------------MACRO-------------------------------------------*/
 //
@@ -33,11 +33,16 @@
 //
 int		ft_printf(const char *str, ...);
 int		ft_putnbr_bfd(long long nbr, char *base, int fd);
-char	*fill_array(char *dst, char *str, size_t n);
 //
 //--------------FORMAT_HANDLER
 //
 int		get_s(char *arg, int fd);
 int		get_p(unsigned long long arg, char *base, int fd);
+//
+//--------------LIBFT_FUNCTIONS
+//
+size_t	ft_strlen(const char *s);
+size_t	ft_putchar_fd(char c, int fd);
+size_t	ft_putstr_fd(char *s, int fd);
 //
 #endif

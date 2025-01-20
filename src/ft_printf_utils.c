@@ -6,7 +6,7 @@
 /*   By: stempels <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 14:37:46 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/13 16:00:45 by stempels         ###   ########.fr       */
+/*   Updated: 2025/01/20 11:02:42 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,20 +50,6 @@ static int	writing_nbr_fd(long long nbr, char *base, ssize_t b_len, int fd)
 		return (-1);
 	printed = printed + writed;
 	return (printed);
-}
-
-char	*fill_array(char *dst, char *str, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n)
-	{
-		dst[i] = str[i];
-		i++;
-	}
-	dst[i] = '\0';
-	return (dst);
 }
 
 int	get_s(char *arg, int fd)

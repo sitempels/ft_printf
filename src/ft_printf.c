@@ -6,13 +6,13 @@
 /*   By: stempels <stempels@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 13:12:39 by stempels          #+#    #+#             */
-/*   Updated: 2025/01/13 16:09:00 by stempels         ###   ########.fr       */
+/*   Updated: 2025/01/20 11:03:45 by stempels         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int	str_prs(va_list arg, char *str, int *printed, int fd);
+static int	str_prs(va_list arg, char *str, int fd);
 static int	is_format(char *str, size_t *place);
 static int	get_print(va_list arg, char type, int fd);
 
@@ -27,18 +27,20 @@ int	ft_printf(const char *str, ...)
 	printed = 0;
 	if (!str)
 		return (-1);
-	str_prs(arg, (char *)str, &printed, fd);
+	printed = str_prs(arg, (char *)str, fd);
 	va_end (arg);
 	return (printed);
 }
 
-static int	str_prs(va_list arg, char *str, int *printed, int fd)
+static int	str_prs(va_list arg, char *str, int fd)
 {
 	int		buffer;
+	int		printed;
 	char	*res;
 	size_t	i;
 
 	i = 0;
+	printed = 0;
 	while (str[i])
 	{
 		buffer = 1;
@@ -51,31 +53,26 @@ static int	str_prs(va_list arg, char *str, int *printed, int fd)
 		}
 		else
 			write (1, res, buffer);
-		*printed = *printed + buffer;
+		printed = printed + buffer;
 		i++;
 	}
-	return (buffer);
+	return (printed);
 }
 
 static int	is_format(char *str, size_t *place)
 {
-	char		typeset[9];
-	size_t		i;
 	size_t		j;
 
-	i = *place + 1;
-	fill_array(typeset, FORMAT, ft_strlen(FORMAT));
 	j = 0;
-	while (typeset[j])
+	while (FORMAT[j])
 	{
-		if (typeset[j] == str[i])
+		if (FORMAT[j] == str[*place + 1])
 		{
-			*place = i;
+			*place = *place + 1;
 			return (1);
 		}
 		j++;
 	}
-	*place = i - 1;
 	return (0);
 }
 
